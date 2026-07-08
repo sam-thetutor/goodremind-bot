@@ -1,3 +1,5 @@
+![GoodRemind banner](assets/banner.png)
+
 # GoodRemind
 
 A Telegram bot that reminds [GoodDollar](https://gooddollar.org) members the moment their daily G$ UBI is ready to claim — so no one leaves free money on the table.
