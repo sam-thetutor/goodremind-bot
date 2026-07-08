@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GoodRemind — Never miss your daily G$</title>
+<meta name="description" content="A free Telegram bot that pings you the moment your daily GoodDollar UBI is ready to claim. Read-only and safe." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #fcf9eb;
+    --ink: #161616;
+    --navy: #001739;
+    --blue: #0050bd;
+    --sky: #06aeff;
+    --peri: #b8c8f2;
+    --green: #00ce3e;
+    --purple: #b66dc1;
+    --line: rgba(0, 23, 57, 0.12);
+    --mono: "Roboto Mono", monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream); color: var(--ink);
+    font-family: "Inter", system-ui, sans-serif;
+    overflow-x: hidden; line-height: 1.65;
+  }
+  h1, h2, h3 { font-family: "Montserrat", sans-serif; }
+  ::selection { background: var(--sky); color: #fff; }
+
+  .page { position: relative; z-index: 1; }
+  .wrap { width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 28px; }
+
+  /* ------- nav ------- */
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 26px 0; }
+  .logo { font-family: "Montserrat", sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--navy); }
+  .logo em { font-style: normal; color: var(--blue); }
+  nav a.mini {
+    font-family: var(--mono); font-size: 0.78rem; color: var(--blue);
+    text-decoration: none; letter-spacing: 0.04em;
+    border-bottom: 1px solid transparent; transition: border-color 0.2s;
+  }
+  nav a.mini:hover { border-color: var(--blue); }
+
+  /* ------- hero ------- */
+  .hero { padding: 30px 0 80px; }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.1fr 0.9fr;
+    gap: 50px; align-items: center;
+  }
+  .hero-inner { max-width: 620px; }
+  h1 {
+    font-size: clamp(2.7rem, 6.4vw, 4.7rem); font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1.04; color: var(--navy);
+    margin-bottom: 26px;
+  }
+  h1 .blue { color: var(--blue); }
+  h1 .mark {
+    position: relative; white-space: nowrap;
+  }
+  h1 .mark::after {
+    content: ""; position: absolute; left: -2%; right: -2%; bottom: 6%;
+    height: 34%; background: var(--peri); z-index: -1; border-radius: 4px;
+  }
+  .sub { color: #45526b; font-size: 1.08rem; max-width: 46ch; margin-bottom: 38px; }
+  .sub b { color: var(--navy); font-weight: 600; }
+
+  .cta {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: var(--blue); color: #fff; text-decoration: none;
+    font-family: "Montserrat", sans-serif; font-weight: 700; font-size: 1rem;
+    padding: 17px 32px; border-radius: 999px;
+    box-shadow: 0 10px 26px rgba(0, 80, 189, 0.28);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .cta:hover {
+    background: var(--navy); transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(0, 23, 57, 0.3);
+  }
+  .cta svg { width: 20px; height: 20px; flex: none; }
+
+  /* ------- ticker ------- */
+  .ticker {
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    overflow: hidden; white-space: nowrap; padding: 13px 0;
+    background: rgba(252, 249, 235, 0.75); backdrop-filter: blur(6px);
+  }
+  .ticker-track { display: inline-block; animation: tick 30s linear infinite; }
+  .ticker span {
+    font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #45526b; padding: 0 24px;
+  }
+  .ticker span i { font-style: normal; color: var(--green); padding-right: 24px; }
+  @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ------- sections ------- */
+  section { padding: 100px 0; }
+  .sec-head { display: flex; align-items: baseline; gap: 20px; margin-bottom: 56px; }
+  .sec-head .idx { font-family: var(--mono); color: var(--sky); font-size: 0.8rem; font-weight: 500; }
+  .sec-head h2 { font-size: clamp(1.7rem, 3.4vw, 2.6rem); font-weight: 800; letter-spacing: -0.02em; color: var(--navy); }
+
+  /* steps */
+  .rows { border-top: 1px solid var(--line); }
+  .row {
+    display: grid; grid-template-columns: 110px 1fr 1.2fr; gap: 26px;
+    padding: 36px 8px; border-bottom: 1px solid var(--line);
+    transition: background 0.3s, padding-left 0.3s;
+  }
+  .row:hover { background: rgba(184, 200, 242, 0.22); padding-left: 20px; }
+  .row .n { font-family: var(--mono); font-size: 1.9rem; color: var(--peri); font-weight: 500; }
+  .row h3 { font-size: 1.25rem; font-weight: 700; color: var(--navy); padding-top: 5px; }
+  .row p { color: #45526b; font-size: 0.95rem; padding-top: 7px; }
+  .row code {
+    font-family: var(--mono); font-size: 0.85em; color: var(--blue);
+    background: rgba(6, 174, 255, 0.1); padding: 2px 8px; border-radius: 4px;
+  }
+
+  /* ------- terminal ------- */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 66px; align-items: center; }
+  .split .copy h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; letter-spacing: -0.02em; color: var(--navy); margin-bottom: 20px; }
+  .split .copy p { color: #45526b; margin-bottom: 16px; }
+  .split .copy p b { color: var(--navy); font-weight: 600; }
+
+  /* phone mockup */
+  .phone {
+    justify-self: center; width: 320px; border-radius: 48px;
+    background: var(--navy); padding: 13px;
+    box-shadow: 0 40px 80px rgba(0, 23, 57, 0.3);
+    position: relative;
+    animation: phoneFloat 7s ease-in-out infinite;
+  }
+  .phone::after {
+    content: ""; position: absolute; right: -3px; top: 130px;
+    width: 3px; height: 64px; background: var(--navy); border-radius: 0 3px 3px 0;
+  }
+  @keyframes phoneFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+  .phone::before {
+    content: ""; position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 24px; background: var(--navy); border-radius: 0 0 16px 16px; z-index: 3;
+  }
+  .screen { background: #e9eef5; border-radius: 34px; overflow: hidden; }
+  .chat-head {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--blue); padding: 34px 14px 12px; position: relative; z-index: 2;
+  }
+  .chat-head .avatar {
+    width: 36px; height: 36px; border-radius: 50%; flex: none;
+    background: var(--cream); color: var(--blue);
+    display: grid; place-items: center;
+    font-family: "Montserrat", sans-serif; font-weight: 800; font-size: 0.8rem;
+  }
+  .chat-head .name { color: #fff; font-size: 0.85rem; font-weight: 600; line-height: 1.2; }
+  .chat-head .status { color: #bfe0ff; font-size: 0.7rem; }
+  .chat { padding: 14px 12px 18px; display: flex; flex-direction: column; gap: 8px; height: 545px; overflow: hidden; }
+  .bubble {
+    max-width: 84%; padding: 9px 12px; border-radius: 14px;
+    font-size: 0.78rem; line-height: 1.5; color: var(--ink);
+    opacity: 0; transform: translateY(10px) scale(0.97);
+    animation: bubbleIn 0.35s cubic-bezier(.2,.7,.3,1.2) forwards;
+  }
+  @keyframes bubbleIn { to { opacity: 1; transform: none; } }
+  .bubble.in { background: #fff; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0, 23, 57, 0.08); }
+  .bubble.out { background: #d3f2ff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .bubble .g { color: #00a532; font-weight: 700; }
+  .bubble .addr { font-family: var(--mono); font-size: 0.72rem; color: var(--blue); }
+  .bubble .btn {
+    display: block; margin-top: 8px; text-align: center;
+    background: var(--blue); color: #fff; font-weight: 600; font-size: 0.75rem;
+    padding: 8px 10px; border-radius: 9px;
+  }
+  .bubble .time { display: block; text-align: right; font-size: 0.62rem; color: #93a2b8; margin-top: 3px; }
+  .divider {
+    align-self: center; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+    color: #7a8aa3; background: rgba(0, 23, 57, 0.06); padding: 4px 12px; border-radius: 999px;
+    opacity: 0; animation: bubbleIn 0.35s forwards;
+  }
+  .typing {
+    display: inline-flex; gap: 4px; align-items: center;
+    background: #fff; align-self: flex-start; padding: 12px 14px;
+    border-radius: 14px; border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 23, 57, 0.08);
+    opacity: 0; animation: bubbleIn 0.25s forwards;
+  }
+  .typing i {
+    width: 6px; height: 6px; border-radius: 50%; background: #a9b6c9;
+    animation: tdot 1s ease-in-out infinite;
+  }
+  .typing i:nth-child(2) { animation-delay: 0.15s; }
+  .typing i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes tdot { 0%, 100% { transform: translateY(0); opacity: .5; } 50% { transform: translateY(-4px); opacity: 1; } }
+
+  /* ------- stats ------- */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 86px; }
+  .stats.split-stats { grid-template-columns: 1fr; margin-top: 0; }
+  .stat {
+    border-radius: 14px; padding: 32px 30px;
+    transition: transform 0.25s;
+  }
+  .stat:hover { transform: translateY(-4px); }
+  .stat:nth-child(1) { background: var(--peri); }
+  .stat:nth-child(2) { background: #d7f0ff; }
+  .stat:nth-child(3) { background: #dcf7e3; }
+  .stat b { display: block; font-family: "Montserrat", sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+  .stat span { font-family: var(--mono); font-size: 0.7rem; color: #33415e; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  /* ------- final ------- */
+  .final { padding: 40px 0 120px; }
+  .final-card {
+    background: var(--blue); border-radius: 24px; text-align: center;
+    padding: 90px 30px; position: relative; overflow: hidden;
+  }
+  .final-card::before, .final-card::after {
+    content: ""; position: absolute; border-radius: 50%;
+  }
+  .final-card::before { width: 340px; height: 340px; background: rgba(6, 174, 255, 0.35); top: -170px; right: -110px; }
+  .final-card::after { width: 260px; height: 260px; background: rgba(184, 200, 242, 0.25); bottom: -140px; left: -80px; }
+  .final-card h2 {
+    font-size: clamp(2rem, 4.6vw, 3.4rem); font-weight: 800; color: #fff;
+    letter-spacing: -0.03em; line-height: 1.08; margin-bottom: 34px; position: relative; z-index: 1;
+  }
+  .cta.invert { background: var(--cream); color: var(--navy); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); position: relative; z-index: 1; }
+  .cta.invert:hover { background: #fff; }
+
+  footer {
+    padding: 0 0 46px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 0.72rem; color: #6b7690; letter-spacing: 0.05em;
+  }
+  footer a { color: var(--blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* reveal */
+  .rv { opacity: 0; transform: translateY(30px); transition: opacity 0.75s cubic-bezier(.2,.7,.3,1), transform 0.75s cubic-bezier(.2,.7,.3,1); }
+  .rv.in { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 54px; }
+    .phone { width: 300px; }
+    .chat { height: 480px; }
+    .split { grid-template-columns: 1fr; gap: 44px; }
+    .row { grid-template-columns: 60px 1fr; }
+    .row p { grid-column: 2; }
+    .stats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="wrap">
+    <nav>
+      <div class="logo">Good<em>Remind</em></div>
+      <a class="mini" href="https://t.me/goodbot_real_bot" target="_blank" rel="noopener">t.me/goodbot_real_bot ↗</a>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-inner">
+          <h1>Never miss your <span class="mark">daily G$</span> <span class="blue">again.</span></h1>
+          <p class="sub">
+            Every forgotten day is UBI <b>left on the table</b>. GoodRemind watches the chain and pings
+            you on Telegram the moment your daily GoodDollar is ready. Paste a wallet once — done.
+          </p>
+          <div>
+            <a class="cta" href="https://t.me/goodbot_real_bot" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+              Start on Telegram
+            </a>
+          </div>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="chat-head">
+              <div class="avatar">G$</div>
+              <div>
+                <div class="name">GoodRemind</div>
+                <div class="status">online</div>
+              </div>
+            </div>
+            <div class="chat" id="chat"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track" id="tickerTrack">
+      <span><i>●</i>Free forever</span><span><i>●</i>Read-only — never touches funds</span><span><i>●</i>Claims reset 12:00 UTC</span><span><i>●</i>Live chain data</span><span><i>●</i>Multi-wallet</span><span><i>●</i>No sign-up</span>
+    </div>
+  </div>
+
+  <!-- HOW -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head rv"><span class="idx">01</span><h2>Ten seconds to onboard</h2></div>
+      <div class="rows">
+        <div class="row rv">
+          <div class="n">01</div>
+          <h3>Open the bot</h3>
+          <p>Hit <code>Start</code> on <code>@goodbot_real_bot</code>. No email, no password, no app to install.</p>
+        </div>
+        <div class="row rv">
+          <div class="n">02</div>
+          <h3>Paste your wallet</h3>
+          <p>Send the address you claim with. Add as many wallets as you want — family included.</p>
+        </div>
+        <div class="row rv">
+          <div class="n">03</div>
+          <h3>Never miss a day</h3>
+          <p>When your G$ turns claimable, you get one message with the amount and a claim link. One per day, no spam.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TERMINAL -->
+  <section style="padding-top: 20px;">
+    <div class="wrap">
+      <div class="split">
+        <div class="copy rv">
+          <div class="sec-head" style="margin-bottom: 24px;"><span class="idx">02</span><h2>Straight from the chain</h2></div>
+          <p>
+            Nothing is cached, nothing is guessed. Every check reads GoodDollar's contracts
+            <b>live</b> — whitelist status, entitlement, amount.
+          </p>
+          <p>
+            And because it only <b>reads</b> public data, there is nothing to steal: the bot never
+            asks for a seed phrase, never holds keys, never touches funds.
+          </p>
+        </div>
+        <div class="stats split-stats">
+          <div class="stat rv"><b>100K+</b><span>weekly active claimers</span></div>
+          <div class="stat rv"><b>12:00 UTC</b><span>daily claim reset</span></div>
+          <div class="stat rv"><b>0 keys</b><span>held, asked for, or needed</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="final">
+    <div class="wrap">
+      <div class="final-card rv">
+        <h2>Stop leaving money<br />on the table.</h2>
+        <a class="cta invert" href="https://t.me/goodbot_real_bot" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Open @goodbot_real_bot
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <div>Made for the <a href="https://gooddollar.org" target="_blank" rel="noopener">GoodDollar</a> community</div>
+      <div>Claim at <a href="https://gooddapp.org" target="_blank" rel="noopener">gooddapp.org</a></div>
+    </footer>
+  </div>
+</div>
+
+<script type="module">
+  /* ---------------- animated chat mockup ---------------- */
+  const chat = document.getElementById("chat");
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  const script = [
+    { kind: "in", html: '👋 Welcome! Send me the wallet you claim with and I\'ll watch it for you.<span class="time">11:57</span>', pause: 1100 },
+    { kind: "out", html: '<span class="addr">0x1234…abcd</span><span class="time">11:58</span>', pause: 900 },
+    { kind: "typing", ms: 1100 },
+    { kind: "in", html: '🔔 Got it! I\'m watching <span class="addr">0x1234…abcd</span>. I\'ll ping you every day when your UBI is ready.<span class="time">11:58</span>', pause: 1400 },
+    { kind: "divider", html: "NEXT DAY — 12:00 UTC", pause: 900 },
+    { kind: "typing", ms: 1000 },
+    { kind: "in", html: '⏰ Your daily G$ is ready!<br /><span class="g">● 42.51 G$</span> waiting for you.<span class="btn">Claim on GoodDapp</span><span class="time">12:03</span>', pause: 1500 },
+    { kind: "out", html: '🙌<span class="time">12:04</span>', pause: 1300 },
+    { kind: "out", html: '/status<span class="time">18:20</span>', pause: 800 },
+    { kind: "typing", ms: 900 },
+    { kind: "in", html: '✅ <span class="addr">0x1234…abcd</span> — already claimed today. Next claim opens at 12:00 UTC.<span class="time">18:20</span>', pause: 3400 },
+  ];
+
+  async function chatLoop() {
+    while (true) {
+      chat.innerHTML = "";
+      for (const step of script) {
+        if (step.kind === "typing") {
+          const t = document.createElement("div");
+          t.className = "typing";
+          t.innerHTML = "<i></i><i></i><i></i>";
+          chat.appendChild(t);
+          chat.scrollTo({ top: chat.scrollHeight, behavior: "smooth" });
+          await sleep(step.ms);
+          t.remove();
+          continue;
+        }
+        const el = document.createElement("div");
+        el.className = step.kind === "divider" ? "divider" : "bubble " + step.kind;
+        el.innerHTML = step.html;
+        chat.appendChild(el);
+        chat.scrollTo({ top: chat.scrollHeight, behavior: "smooth" });
+        await sleep(step.pause);
+      }
+      await sleep(1800);
+    }
+  }
+  chatLoop();
+
+  /* ---------------- scroll reveal ---------------- */
+  const io = new IntersectionObserver(
+    (es) => es.forEach((e) => e.isIntersecting && e.target.classList.add("in")),
+    { threshold: 0.12 }
+  );
+  document.querySelectorAll(".rv").forEach((el) => io.observe(el));
+
+  const track = document.getElementById("tickerTrack");
+  track.innerHTML += track.innerHTML;
+</script>
+</body>
+</html>

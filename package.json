@@ -1,0 +1,31 @@
+{
+  "name": "goodremind-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot that reminds GoodDollar members when their daily G$ UBI is ready to claim",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "prisma generate && tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "tsc --noEmit",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "dotenv": "^16.5.0",
+    "grammy": "^1.44.0",
+    "viem": "^2.31.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.32",
+    "prisma": "^6.19.3",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TelegramSubscriber {
+  id              String   @id @default(cuid())
+  chatId          String   @map("chat_id")
+  wallet          String
+  active          Boolean  @default(true)
+  lastRemindedDay String?  @map("last_reminded_day")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@unique([chatId, wallet])
+  @@index([active])
+  @@map("telegram_subscribers")
+}
