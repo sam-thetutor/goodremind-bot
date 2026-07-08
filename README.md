@@ -2,6 +2,7 @@
 
 A Telegram bot that reminds [GoodDollar](https://gooddollar.org) members the moment their daily G$ UBI is ready to claim — so no one leaves free money on the table.
 
+**Website:** [remind.goodagentids.xyz](https://remind.goodagentids.xyz)
 **Try it:** [t.me/goodbot_real_bot](https://t.me/goodbot_real_bot)
 
 ## How it works
@@ -71,7 +72,7 @@ src/
 prisma/
   schema.prisma  one table: telegram_subscribers
 site/
-  index.html   landing page (static, no build step)
+  index.html   landing page (static, no build step) — live at remind.goodagentids.xyz
 ```
 
 ## On-chain reads
