@@ -5,7 +5,7 @@
 A Telegram bot that reminds [GoodDollar](https://gooddollar.org) members the moment their daily G$ UBI is ready to claim — so no one leaves free money on the table.
 
 **Website:** [remind.goodagentids.xyz](https://remind.goodagentids.xyz)
-**Try it:** [t.me/goodbot_real_bot](https://t.me/goodbot_real_bot)
+**Try it:** [t.me/gooddollarremind_bot](https://t.me/gooddollarremind_bot)
 
 ## How it works
 
