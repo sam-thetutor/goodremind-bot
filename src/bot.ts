@@ -108,17 +108,33 @@ export function createBot(token: string): Bot {
     }
 
     const wallet = getAddress(match[0]);
+
+    // Only watch GoodDollar-verified wallets: unverified addresses can't
+    // claim UBI anyway, and rejecting them keeps spam out of the scan set.
+    let result;
+    try {
+      [result] = await getClaimEligibilityBatch([wallet]);
+    } catch {
+      await ctx.reply(
+        "⚠️ Couldn't reach the Celo network to verify that address. Please try again in a minute.",
+      );
+      return;
+    }
+
+    if (!result.isWhitelisted) {
+      await ctx.reply(
+        `⚪️ <code>${shortAddress(wallet)}</code> isn't GoodDollar-verified, so it can't claim UBI and I won't watch it.\n\n` +
+          "Verify your face in the GoodWallet app or on GoodDapp first, then send the address again.",
+        { parse_mode: "HTML" },
+      );
+      return;
+    }
+
     await subscribeWallet(String(ctx.chat.id), wallet);
 
-    let firstCheck = "";
-    try {
-      const [result] = await getClaimEligibilityBatch([wallet]);
-      firstCheck = `\n\n${statusLine(result)}`;
-      if (result.eligible) {
-        firstCheck += `\n👉 <a href="${CLAIM_URL}">Claim now on GoodDapp</a>`;
-      }
-    } catch {
-      // Chain hiccup — the subscription is saved, the scheduler will catch up.
+    let firstCheck = `\n\n${statusLine(result)}`;
+    if (result.eligible) {
+      firstCheck += `\n👉 <a href="${CLAIM_URL}">Claim now on GoodDapp</a>`;
     }
 
     await ctx.reply(
